@@ -77,7 +77,6 @@ io.on('connection',function(socket) {
 		})
 	});
 	socket.on('cleanRoute',function(data){
-
 		var rou = true;
 		routes.find((route,i)=>{
 			try{
