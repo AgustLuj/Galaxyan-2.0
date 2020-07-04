@@ -105,7 +105,7 @@ function Ship(x,y,route,c){
 	}
 }
 
-function Route(a,b,pop){
+function Route(a,b,pop,ok){
 
 	this.id = null;
 
@@ -115,6 +115,7 @@ function Route(a,b,pop){
 	this.b = b;
 
 	this.pop = pop;
+	this.ok= ok;
 
 	this.dx = p[b].x - p[a].x;
 	this.dy = p[b].y - p[a].y;
@@ -271,12 +272,14 @@ function draw(){
 	}
 
 	for(var i = 0;i < routes.length;i++){ //DRAW OF ROUTES
-
-		if(routes[i].ships.length > 0){
-			routes[i].draw();
-		}else{
-			cleanRoute({'id':routes[i].id,'pop':routes[i].pop});
-			routes.splice(i,1);
+		if(routes[i].ok){
+			if(routes[i].ships.length > 0){
+				routes[i].draw();
+			}else{
+				cleanRoute({'id':routes[i].id,'pop':routes[i].pop});
+				//routes.splice(i,1);
+				routes[i].ok=false;
+			}
 		}
 	}
 
@@ -528,7 +531,7 @@ function setColor(data){
 
 function setRoute(data){
 
-	routes.push(new Route(data.a,data.b,data.pop));
+	routes.push(new Route(data.a,data.b,data.pop,true));
 	routes[routes.length-1].id = data.id;
 	routes[routes.length-1].pid = data.pid;
 }

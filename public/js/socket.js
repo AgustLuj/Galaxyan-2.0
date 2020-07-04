@@ -1,4 +1,4 @@
-var socket = io.connect({'forceNew':true});
+const socket = io.connect({'forceNew':true});
 var con = false; 
 function ingresar() {
 	socket.emit('users',function(id,color) {
