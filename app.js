@@ -103,7 +103,6 @@ io.on('connection',function(socket) {
 								planets[routes[i].b].color = routes[i].color;
 							}
 						}
-	
 						io.emit('setPlayers',user);
 						io.emit('updatePlanets',[planets[routes[i].a],planets[routes[i].b]]);
 						routes[i].ok=false;
