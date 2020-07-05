@@ -3,6 +3,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+app.set('port', (process.env.PORT || 80));
 app.use(express.static('public'));
 /****************************************/
 var f=new Date();
@@ -77,7 +78,7 @@ io.on('connection',function(socket) {
 		})
 	});
 	socket.on('cleanRoute',function(data){
-		
+	
 		var rou = true;
 		routes.find((route,i)=>{
 			try{
@@ -117,10 +118,8 @@ io.on('connection',function(socket) {
 	})
 });
 
-server.listen(80,function() {
-
-	console.log('El servidor esta corriendo en 8080 '+cad);
-
+server.listen(app.get('port'), function() {
+    console.log('Node app is running on port', app.get('port'), cad);
 });
 
 /***********************************************************/
