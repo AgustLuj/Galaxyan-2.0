@@ -82,7 +82,7 @@ io.on('connection',function(socket) {
 		var rou = true;
 		routes.find((route,i)=>{
 			try{
-				if(route.id == data.id || route.ok){
+				if(route.id == data.id && route.ok){
 					if (routes[i].a != undefined && routes[i].b != undefined){
 						if(planets[routes[i].b].pid == 0 && planets[routes[i].b].pop == 0){ //conquista de neutro (PID B = 0)
 							//var a = info(1,planets[routes[i].a].pid)
@@ -107,13 +107,14 @@ io.on('connection',function(socket) {
 						io.emit('setPlayers',user);
 						io.emit('updatePlanets',[planets[routes[i].a],planets[routes[i].b]]);
 						routes[i].ok=false;
+						delete routes[i];
 						//routes.splice(i,1);
+						return;
 					}
 				}
 			}catch{
-				console.log("un fallo :S")
+				//console.log(i)
 			}
-			
 		})
 	})
 });
@@ -228,17 +229,14 @@ var juego =(function(argument) {
 			io.to(user[i].socket_id).emit('setPlayers',user);
 		}
 	}
-	function loop() {
-		actualizar();
-		enviar();
-		timer = setTimeout(loop,velocidad);
-	}
 	return{
 		iniciar : function() {
-			loop();
+			timer = setInterval(enviar,velocidad);
+			timer2 = setInterval(actualizar,1000);
 		},
 		detener:function() {
 			clearTimeout(timer);
+			clearTimeout(timer2);
 		}
 	}
 })();

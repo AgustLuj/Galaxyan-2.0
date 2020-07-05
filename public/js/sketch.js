@@ -272,15 +272,13 @@ function draw(){
 	}
 
 	for(var i = 0;i < routes.length;i++){ //DRAW OF ROUTES
-		if(routes[i].ok){
 			if(routes[i].ships.length > 0){
 				routes[i].draw();
 			}else{
 				cleanRoute({'id':routes[i].id,'pop':routes[i].pop});
-				//routes.splice(i,1);
-				routes[i].ok=false;
+				routes.splice(i,1);
+				//routes[i].ok=false;
 			}
-		}
 	}
 
 	if(a != -1 && b == -1){    //DRAWING OF PATH
