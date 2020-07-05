@@ -64,14 +64,19 @@ io.on('connection',function(socket) {
 
 	socket.on('disconnect',function() {
 		user.find(({socket_id},i)=>{
+
 			if(socket_id === socket.id){
+
 				planets.find(({pid},j)=>{
+
 					if (pid == socket.id) {
+
 						planets[j].pid = 0;
 						planets[j].pop = 0;
 						io.emit('setPlanets',planets);
 						user[i].on=false;
 						io.emit('setPlayers',user);
+						
 					}
 				})
 			}
@@ -83,18 +88,27 @@ io.on('connection',function(socket) {
 		routes.find((route,i)=>{
 			try{
 				if(route.id == data.id && route.ok){
+
 					if (routes[i].a != undefined && routes[i].b != undefined){
+
 						if(planets[routes[i].b].pid == 0 && planets[routes[i].b].pop == 0){ //conquista de neutro (PID B = 0)
+
 							//var a = info(1,planets[routes[i].a].pid)
 							planets[routes[i].b].pid = routes[i].pid;
 							planets[routes[i].b].pop = data.pop;
 							planets[routes[i].b].color = routes[i].color;
 							//user[a].p++;
+
 						}else if(planets[routes[i].b].pid == routes[i].pid){ //mismo planeta (PID A = PID B)
+
 							planets[routes[i].b].pop += data.pop;
+
 						}else if(planets[routes[i].b].pid != routes[i].pid){ //conquista otra base (PID A != PID B)
+
 							planets[routes[i].b].pop -= data.pop;
+
 							if(planets[routes[i].b].pop <= 0){
+
 								//var a = info(1,planets[routes[i].a].pid);
 								//var b = info(1,planets[routes[i].b].pid);
 								//user[b].p -=1;
@@ -102,8 +116,10 @@ io.on('connection',function(socket) {
 								planets[routes[i].b].pid = routes[i].pid;
 								planets[routes[i].b].pop = -planets[routes[i].b].pop;
 								planets[routes[i].b].color = routes[i].color;
+
 							}
 						}
+
 						io.emit('setPlayers',user);
 						io.emit('updatePlanets',[planets[routes[i].a],planets[routes[i].b]]);
 						routes[i].ok=false;
@@ -155,18 +171,18 @@ function genBase(name) {
 }
 function info(tp,data) {
 	if (tp == 1) {
-		for (var i = 0; i < user.length; i++) {
-			if(user[i].socket_id == data ){
+		user.find(({socket_id},i)=>{
+			if(socket_id == data ){
 				return i;
 			}
-		}
+		})
 	}
 	if (tp == 2) {
-		for (var i = 0; i < planet.length; i++) {
-			if(planet[i].pid == data){
+		planet.find(({pid})=>{
+			if(pid == data){
 				return planets[i];
 			}
-		}
+		})
 	}
 }
 
@@ -204,21 +220,21 @@ var juego =(function(argument) {
 
 	function actualizar() {
 		var cont = 0;
-		for (var i = 0; i < planets.length; i++) {
-			for (var j = 0; j < user.length; j++) {
-				if(user[j].socket_id == planets.pid){
+		planets.forEach(({pid,pop,d,id},i)=>{
+			user.forEach(({socket_id},j)=>{
+				if(socket_id == pid){
 					cont++;
 					user[j].p = cont;
 				}
-			}
-			if(planets[i].pop > 0 && planets[i].pip != 0 ){
-				if(planets[i].pop < planets[i].d*4 && planets[i].pop >= 0){
+			})
+			if(pop > 0 && pip != 0 ){
+				if(pop < d*4 && pop >= 0){
 					planets[i].pop++;
-				}else if(planets[i].pop > (planets[i].d*4)+1) {
-					reducir_max(planets[i].id);
+				}else if(pop > (d*4)+1) {
+					reducir_max(id);
 				}
 			}
-		}
+		})
 	}
 	function reducir_max(i) {
 		planets[i].pop -=3 ;
